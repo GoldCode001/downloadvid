@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import yt_dlp
 import urllib.parse
-from account_details_component import account_details_component
+#from account_details_component import account_details_component
 
 #import 
 
