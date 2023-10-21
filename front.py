@@ -170,6 +170,7 @@ if check_internet_connection():
 
             3. Tiktok
             4. Youtube
+            5. X (formerly known as Twitter)
             """
         )
         # Write-up and Copyright
