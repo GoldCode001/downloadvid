@@ -2,9 +2,6 @@ import streamlit as st
 import requests
 import yt_dlp
 import urllib.parse
-#from account_details_component import account_details_component
-
-#import 
 
 # --- PAGE CONFIG ---
 st.set_page_config(
@@ -19,12 +16,7 @@ account_name = "Alice Goldman"
 account_number = "40630168569188462"
 bank_name = "WELLS FARGO BANK, N.A."
 
-# Add the following line in your Streamlit app to apply the CSS.
-#st.markdown('<link rel="stylesheet" type="text/css" href="styles.css">', unsafe_allow_html=True)
-
-
-# load_css_file(CSS_FILE)
-# Place the menu at the top of the page
+# CSS to hide Streamlit's default menu and footer
 st.markdown(
     """
     <style>
@@ -43,31 +35,22 @@ def check_internet_connection():
     except requests.ConnectionError:
         return False
 
-if check_internet_connection():
+def main():
+    st.title('Download Vid')
 
-# Function to display the webpage content
-    def main():
-        st.title('Download Vid')
+    # Create a text input field for the video URL
+    video_url = st.text_input('Enter the video URL')
 
+    # Create a button to trigger the download
+    if st.button('Process Video'):
+        # Display a spinner while waiting for the response
+        with st.spinner('Processing...'):
+            # Send a POST request to your Flask backend
+            backend_url = 'https://video-download-9jmu.onrender.com'  # Update to your actual backend URL
+            response = requests.post(backend_url, data={'url': video_url})
 
-
-
-
-
-        # Create a text input field for the video URL
-        video_url = st.text_input('Enter the video URL')
-
-        # Create a button to trigger the download
-        if st.button('Process Video'):
-            # Display a spinner while waiting for the response
-            
-            with st.spinner('Processing...'):
-                # Send a POST request to your Flask backend
-                # Replace 'http://localhost:5000/api/download' with the correct backend URL
-                backend_url = 'https://backt.onrender.com/api/download'
-                response = requests.post(backend_url, data={'url': video_url})
-
-                if response.status_code == 200:
+            if response.status_code == 200:
+                try:
                     download_links = response.json()
                     st.write('Download Links:')
                     for i, link in enumerate(download_links, start=1):
@@ -90,27 +73,22 @@ if check_internet_connection():
                         video_content = requests.get(link).content
 
                         # Create a download button with the video content and the video title as the filename
-                        st.download_button( f'Download Video {i}', data=video_content, file_name=f'{title}.mp4', key=f'download_button_{i}')
-                else:
-                    st.error(f'Error fetching download links: Status Code {response.status_code}')
+                        st.download_button(f'Download Video {i}', data=video_content, file_name=f'{title}.mp4', key=f'download_button_{i}')
+                except Exception as e:
+                    st.error(f'Error processing the video: {str(e)}')
+            else:
+                st.error(f'Error fetching download links: Status Code {response.status_code}')
 
-        
-        
-        # Introduction
-        st.write("""Please consider donating any amount you have, this free tool was built with python by Goldman precious, and any donation you make will be very much appreciated💚🌍. With love from nigeria""")
+    # Introduction
+    st.write("""Please consider donating any amount you have, this free tool was built with Python by Goldman Precious, and any donation you make will be very much appreciated 💚🌍. With love from Nigeria.""")
 
-    # Display a clickable link in Streamlit
-        st.header('Donations:')
-        st.markdown('If you are donating from Nigeria, [Click here](https://paystack.com/pay/donate-nigeria)')
-
-
-        
-        # Create a frame-like view
-        st.subheader("If you are donating from other parts of the world kindly transfer to the account details below")
-
-        #Create a frame-like display using Streamlit columns
-        st.write(
-        f'<div style="border: 2px solid #999;color:yellow; padding: 20px; border-radius: 10px;">'
+    # Display donation information
+    st.header('Donations:')
+    st.markdown('If you are donating from Nigeria, [Click here](https://paystack.com/pay/donate-nigeria)')
+    
+    st.subheader("If you are donating from other parts of the world, kindly transfer to the account details below")
+    st.write(
+        f'<div style="border: 2px solid #999; color:yellow; padding: 20px; border-radius: 10px;">'
         f'<h3>Bank Account Details</h3>'
         f'<p><b>Account name:</b> {account_name} </p>'
         f'<p><b>Bank name:</b> {bank_name} </p>'
@@ -118,69 +96,50 @@ if check_internet_connection():
         '</div>',
         unsafe_allow_html=True
     )
-        
-        ##f'<div style="border: 2px solid #999; padding: 20px; border-radius: 10px;">'
-        #account_details_component(account_name, bank_name, account_number)
-        
 
-        # Read the content of the HTML file
-        #with open("account_details.html", "r") as html_file:
-        #    html_content = html_file.read()
+    st.write("")
 
-        # Create an iframe to display the HTML content
-        #st.markdown(f'<iframe src="{html_content}" style="width:100%; height:400px;"></iframe>', unsafe_allow_html=True)
+    st.markdown(
+        """
+        Welcome to the Online Video Downloader! This tool allows you to easily download videos from various websites.
+        Simply enter the video URL, click the "Download" button, and get ready to save your favorite videos for offline viewing.
+        """
+    )
 
-                
-        st.write("""
+    # How to Use
+    st.header('How to Use:')
+    st.markdown(
+        """
+        1. Enter the URL of the video you want to download in the provided text input field.
 
+        2. Click the "Download" button to start the download process.
 
+        3. Once the download links are available, you can preview the video, see its name, and download it to your device.
+        """
+    )
 
+    # Platforms
+    st.header('Platforms you can download from:')
+    st.markdown(
+        """
+        1. Instagram
+        2. Facebook
+        3. TikTok
+        4. YouTube
+        5. X (formerly known as Twitter)
+        """
+    )
 
+    # Write-up and Copyright
+    st.markdown(
+        """
+        ---
+        © 2023 Online Video Downloader. All Rights Reserved.
+        """
+    )
 
-
-
-
-
-
-        """)
-        st.markdown(
-            """
-            Welcome to the Online Video Downloader! This tool allows you to easily download videos from various websites.
-            Simply enter the video URL, click the "Download" button, and get ready to save your favorite videos for offline viewing.
-            """
-        )
-
-        # How to Use
-        st.header('How to Use:')
-        st.markdown(
-            """
-            1. Enter the URL of the video you want to download in the provided text input field.
-
-            2. Click the "Download" button to start the download process.
-
-            3. Once the download links are available, you can preview the video, see its name, and download it to your device.
-            """
-        )
-        # platforms
-        st.header('Platforms you can download from:')
-        st.markdown(
-            """
-            1. Instagram
-            2. Facebook
-
-            3. Tiktok
-            4. Youtube
-            5. X (formerly known as Twitter)
-            """
-        )
-        # Write-up and Copyright
-        st.markdown(
-            """
-            ---
-            © 2023 Online Video Downloader. All Rights Reserved.
-            """
-        )
+if check_internet_connection():
+    main()
 else:
     st.error("No internet connection. Please check your internet connectivity and try again.")
-if __name__ == '__main__':
-    main()
+
